@@ -1,0 +1,37 @@
+module MalRepl (malRead, malEval, malPrint, malEval) where
+
+import System.IO
+import System.Console.Readline
+
+type MalStr = String
+
+malRead :: String -> MalStr
+malRead = id
+
+malEval :: MalStr -> MalStr
+malEval = id
+
+malPrint :: MalStr -> String
+malPrint = id
+
+malRep :: String -> String
+malRep = malPrint . malEval . malRead
+
+malRepl :: IO (Maybe String)
+malRepl = hFlush stdout
+        >> getLine "user >"
+
+main :: IO ()
+main = do
+  input <- malRepl
+  case input of
+    Nothing -> return ()
+    Just ":quit" -> return ()
+    Just "" -> main
+    Just line -> do addHistory line
+                    malRep line
+                    main
+
+  
+
+  
